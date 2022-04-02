@@ -1,0 +1,51 @@
+{
+  "id": "494f1d52-eb3b-41cd-b1cb-6021adb0a79e",
+  "uid": "autem-optio-debitis",
+  "type": "post",
+  "data": {
+    "title": "drive customized web-readiness",
+    "subtitle": "transition distributed web-readiness",
+    "author": "streamline granular applications",
+    "banner": {
+      "dimensions": {
+        "width": 900,
+        "height": 500
+      },
+      "alt": "Placeholder image",
+      "copyright": null,
+      "url": "https://images.unsplash.com/photo-1544731612-de7f96afe55f?w=900&h=500&fit=crop"
+    },
+    "content": [
+      {
+        "heading": "productize efficient functionalities",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Sit commodo commodo ea id proident cupidatat pariatur consequat ullamco.",
+            "spans": []
+          }
+        ]
+      },
+      {
+        "heading": "orchestrate impactful vortals",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Anim ex consequat pariatur laboris elit. In sint magna duis id deserunt labore deserunt. Do quis sint occaecat cillum fugiat ullamco consectetur.",
+            "spans": []
+          }
+        ]
+      },
+      {
+        "heading": "benchmark dot-com supply-chains",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Ea adipisicing incididunt esse ipsum enim. Consequat elit sint ipsum culpa sint mollit mollit dolor. Voluptate non Lorem commodo culpa voluptate esse velit quis minim duis.",
+            "spans": []
+          }
+        ]
+      }
+    ]
+  }
+}
