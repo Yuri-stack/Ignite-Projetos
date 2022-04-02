@@ -1,3 +1,7 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import Prismic from '@prismicio/client';
 import { DefaultClient } from '@prismicio/client/types/client';
 

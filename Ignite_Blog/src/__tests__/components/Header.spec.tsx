@@ -1,3 +1,7 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { render, screen, fireEvent } from '@testing-library/react';
 import { RouterContext } from 'next/dist/next-server/lib/router-context';
 
