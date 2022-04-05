@@ -11,7 +11,7 @@ export default function Header() {
     <header className = { styles.headerContainer }>
       <div className = { styles.headerContent }>
         <Link href="/">
-          <img src="images/Logo.svg" alt="Logo" />
+          <img src="/images/Logo.svg" alt="Logo" />
         </Link>
       </div>
     </header>

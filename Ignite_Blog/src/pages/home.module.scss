@@ -6,13 +6,12 @@
 
 .posts {
     max-width: 720px;
-    margin: 5rem auto 0;
+    margin: 0 auto;
 
     a {
         display: block;
 
         &+a {
-            // margin-top: 2rem;
             padding-top: 2rem;
         }
 
@@ -22,7 +21,7 @@
             line-height: 2rem;
 
             font-size: 1.75rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--heading);
         }
 
@@ -53,5 +52,14 @@
                 }
             }
         }
+    }
+
+    .button{
+        margin-top: 4rem;
+
+        font-weight: 600;
+        color: var(--highlight);
+
+        cursor: pointer;
     }
 }

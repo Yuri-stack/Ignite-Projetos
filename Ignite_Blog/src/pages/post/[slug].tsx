@@ -3,7 +3,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { Head } from 'next/document';
 
+import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -30,9 +32,45 @@ interface PostProps {
   post: Post;
 }
 
-// export default function Post() {
-//   // TODO
-// }
+export default function Post() {
+  return (
+    <>
+      <main className={styles.container}>
+        <img className={styles.banner} src="/images/Banner.png" alt="Banner" />
+
+        <article className={styles.post}>
+          <h1>Como utilizar Hooks</h1>
+
+          <div className={styles.info}>
+            <div>
+              <FiCalendar />
+              <time>02 Abril 2022</time>
+            </div>
+            <div>
+              <FiUser />
+              Yuri O.
+            </div>
+            <div>
+              <FiClock />
+              4 min.
+            </div>
+          </div>
+
+          <div className={styles.content}>
+            <h2>Proin et varius</h2>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate facilis illo voluptate nobis veniam fugit maxime sit repudiandae aperiam nisi cumque necessitatibus quas, corporis nulla debitis, voluptates, similique consequuntur quos?
+            </p>
+
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate facilis illo voluptate nobis veniam fugit maxime sit repudiandae aperiam nisi cumque necessitatibus quas, corporis nulla debitis, voluptates, similique consequuntur quos?
+            </p>
+          </div>
+        </article>
+      </main>
+    </>
+  )
+}
 
 // export const getStaticPaths = async () => {
 //   const prismic = getPrismicClient();
