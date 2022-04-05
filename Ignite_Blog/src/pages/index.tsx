@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { GetStaticProps } from 'next';
+import Link from 'next/link';
 
 import { FiCalendar, FiUser } from 'react-icons/fi';
 import { getPrismicClient } from '../services/prismic';
@@ -34,37 +35,44 @@ export default function Home() {
     <>
       <main className={styles.container}>
         <div className={styles.posts}>
-          <a>
-            <strong>Como utilizar Hooks</strong>
-            <p>Pensando em sincronização em vez de ciclos de vida.</p>
-            
-            <div className={styles.info}>
-              <div>
-                <FiCalendar />
-                <time>02 Abril 2022</time>
-              </div>
-              <div>
-                <FiUser />
-                Yuri O.
-              </div>
-            </div>
-          </a>
 
-          <a>
-            <strong>Criando um app CRA do zero</strong>
-            <p>Tudo sobre como criar a sua primeira aplicação utilizando Create React App</p>
-            
-            <div className={styles.info}>
-              <div>
-                <FiCalendar />
-                <time>02 Abril 2022</time>
+          <Link href="/post/como-utilizar-hooks">
+            <a>
+              <strong>Como utilizar Hooks</strong>
+              <p>Pensando em sincronização em vez de ciclos de vida.</p>
+
+              <div className={styles.info}>
+                <div>
+                  <FiCalendar />
+                  <time>02 Abril 2022</time>
+                </div>
+                <div>
+                  <FiUser />
+                  Yuri O.
+                </div>
               </div>
-              <div>
-                <FiUser />
-                Yuri O.
+            </a>
+          </Link>
+
+          <Link href="/">
+            <a>
+              <strong>Criando um app CRA do zero</strong>
+              <p>Tudo sobre como criar a sua primeira aplicação utilizando Create React App</p>
+
+              <div className={styles.info}>
+                <div>
+                  <FiCalendar />
+                  <time>02 Abril 2022</time>
+                </div>
+                <div>
+                  <FiUser />
+                  Yuri O.
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </Link>
+
+          <p className={ styles.button }>Carregar mais posts</p>
 
         </div>
       </main>
