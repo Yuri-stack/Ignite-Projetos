@@ -35,6 +35,10 @@ interface PostProps {
 export default function Post() {
   return (
     <>
+      <Head>
+        Nome do Post
+      </Head>
+
       <main className={styles.container}>
         <img className={styles.banner} src="/images/Banner.png" alt="Banner" />
 

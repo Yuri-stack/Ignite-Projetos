@@ -4,6 +4,7 @@
 
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
+import Prismic from '@prismicio/client';
 
 import { FiCalendar, FiUser } from 'react-icons/fi';
 import { getPrismicClient } from '../services/prismic';
@@ -72,7 +73,7 @@ export default function Home() {
             </a>
           </Link>
 
-          <p className={ styles.button }>Carregar mais posts</p>
+          <p className={styles.button}>Carregar mais posts</p>
 
         </div>
       </main>
@@ -80,9 +81,18 @@ export default function Home() {
   )
 }
 
-// export const getStaticProps = async () => {
-//   // const prismic = getPrismicClient();
-//   // const postsResponse = await prismic.query(TODO);
+export const getStaticProps = async () => {
+  const prismic = getPrismicClient();
+  const postsResponse = await prismic.query([
+    Prismic.predicates.at('document.type', 'post')
+  ], {
+    fetch: ['title', 'content'],
+    pageSize: 3,
+  });
 
-//   // TODO
-// };
+  console.log(postsResponse)
+
+  return(
+    {}
+  )
+};
