@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
+import { useState } from 'react';
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import Prismic from '@prismicio/client';
@@ -31,47 +32,35 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home() {
+export default function Home({ postsPagination }: HomeProps) {
+  const [posts, setPosts] = useState<Post[]>(postsPagination.results)
+
   return (
     <>
       <main className={styles.container}>
         <div className={styles.posts}>
 
-          <Link href="/post/como-utilizar-hooks">
-            <a>
-              <strong>Como utilizar Hooks</strong>
-              <p>Pensando em sincronização em vez de ciclos de vida.</p>
+          {
+            posts.map(post => (
+              <Link href="/">
+                <a key={ post.uid }>
+                  <strong>{ post.data.title }</strong>
+                  <p>{ post.data.subtitle }</p>
 
-              <div className={styles.info}>
-                <div>
-                  <FiCalendar />
-                  <time>02 Abril 2022</time>
-                </div>
-                <div>
-                  <FiUser />
-                  Yuri O.
-                </div>
-              </div>
-            </a>
-          </Link>
-
-          <Link href="/">
-            <a>
-              <strong>Criando um app CRA do zero</strong>
-              <p>Tudo sobre como criar a sua primeira aplicação utilizando Create React App</p>
-
-              <div className={styles.info}>
-                <div>
-                  <FiCalendar />
-                  <time>02 Abril 2022</time>
-                </div>
-                <div>
-                  <FiUser />
-                  Yuri O.
-                </div>
-              </div>
-            </a>
-          </Link>
+                  <div className={styles.info}>
+                    <div>
+                      <FiCalendar />
+                      <time>{ post.first_publication_date }</time>
+                    </div>
+                    <div>
+                      <FiUser />
+                      { post.data.author }
+                    </div>
+                  </div>
+                </a>
+              </Link>
+            ))
+          }
 
           <p className={styles.button}>Carregar mais posts</p>
 
@@ -81,18 +70,38 @@ export default function Home() {
   )
 }
 
-export const getStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const prismic = getPrismicClient();
-  const postsResponse = await prismic.query([
+
+  const postsResponse = await prismic.query<any>([
     Prismic.predicates.at('document.type', 'post')
   ], {
     fetch: ['title', 'content'],
     pageSize: 3,
   });
 
-  console.log(postsResponse)
+  // console.log(JSON.stringify(postsResponse, null, 2))
 
-  return(
-    {}
-  )
+  const posts = postsResponse.results.map(post => {
+    return {
+      uid: post.uid,
+      first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt-BR', {
+        day: '2-digit', month: 'long', year: 'numeric'
+      }),
+      data: {
+        title: post.data.title,
+        subtitle: post.data.subtitle,
+        author: post.data.author
+      }
+    }
+  })
+
+  const postsPagination = {
+    next_page: postsResponse.next_page,
+    results: posts
+  }
+
+  return {
+    props: { postsPagination }
+  }
 };
