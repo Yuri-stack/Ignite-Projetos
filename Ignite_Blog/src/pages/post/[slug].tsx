@@ -3,7 +3,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { Head } from 'next/document';
+import Head from 'next/head';
+import { RichText } from 'prismic-dom';
 
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import { getPrismicClient } from '../../services/prismic';
@@ -32,27 +33,27 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post() {
+export default function Post({ post }: PostProps) {
   return (
     <>
       <Head>
-        Nome do Post
+        <title>{post.data.title}</title>
       </Head>
 
       <main className={styles.container}>
-        <img className={styles.banner} src="/images/Banner.png" alt="Banner" />
+        <img className={styles.banner} src={post.data.banner.url} alt="Banner" />
 
         <article className={styles.post}>
-          <h1>Como utilizar Hooks</h1>
+          <h1>{post.data.title}</h1>
 
           <div className={styles.info}>
             <div>
               <FiCalendar />
-              <time>02 Abril 2022</time>
+              <time>{post.first_publication_date}</time>
             </div>
             <div>
               <FiUser />
-              Yuri O.
+              {post.data.author}
             </div>
             <div>
               <FiClock />
@@ -60,32 +61,51 @@ export default function Post() {
             </div>
           </div>
 
-          <div className={styles.content}>
-            <h2>Proin et varius</h2>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate facilis illo voluptate nobis veniam fugit maxime sit repudiandae aperiam nisi cumque necessitatibus quas, corporis nulla debitis, voluptates, similique consequuntur quos?
-            </p>
+          {post.data.content.map(content => (
+            <div className={styles.content}>
+              <h2>{ content.heading }</h2>
+              <div dangerouslySetInnerHTML={{
+                __html: RichText.asHtml(content.body)
+              }}/>
+            </div>
+          ))}
 
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate facilis illo voluptate nobis veniam fugit maxime sit repudiandae aperiam nisi cumque necessitatibus quas, corporis nulla debitis, voluptates, similique consequuntur quos?
-            </p>
-          </div>
         </article>
       </main>
     </>
   )
 }
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient();
-//   const posts = await prismic.query(TODO);
+export const getStaticPaths: GetStaticPaths = async () => {
+  const prismic = getPrismicClient();
+  // const posts = await prismic.query(TODO);
 
-//   // TODO
-// };
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
+};
 
-// export const getStaticProps = async context => {
-//   const prismic = getPrismicClient();
-//   const response = await prismic.getByUID(TODO);
+export const getStaticProps: GetStaticProps = async context => {
+  const prismic = getPrismicClient();
+  const { slug } = context.params
 
-//   // TODO
-// };
+  const response = await prismic.getByUID<any>('post', String(slug), {});
+
+  const post = {
+    first_publication_date: new Date(response.first_publication_date).toLocaleDateString('pt-BR', {
+      day: '2-digit', month: 'long', year: 'numeric'
+    }),
+    data: {
+      title: response.data.title,
+      banner: response.data.banner,
+      author: response.data.author,
+      content: response.data.content
+    }
+  }
+
+  return {
+    props: { post }
+  }
+
+};
