@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -35,6 +35,39 @@ interface HomeProps {
 
 export default function Home({ postsPagination }: HomeProps) {
   const [posts, setPosts] = useState<Post[]>(postsPagination.results)
+  const [nextPage, setNextPage] = useState<string>(postsPagination.next_page)
+
+  useEffect(() => {
+    setPosts(postsPagination.results)
+    setNextPage(postsPagination.next_page)
+  }, [postsPagination])
+
+  const loadPosts = async(): Promise<void> => {
+    if(nextPage){
+      fetch(nextPage)
+      .then(resp => resp.json())
+      .then(data => {
+
+        const newPosts = data.results.map((post: Post) => ({
+          uid: post.uid,
+          first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt-BR', {
+            day: '2-digit', month: 'long', year: 'numeric'
+          }),
+          data: {
+            title: post.data.title,
+            subtitle: post.data.subtitle,
+            author: post.data.author,
+          },
+        }))
+
+        setNextPage(data.nextPage)
+        setPosts([...posts, ...newPosts])
+      })
+      .catch(() => {
+        console.error('Error fecthing new page.');
+      });
+    }
+  }
 
   return (
     <>
@@ -46,28 +79,35 @@ export default function Home({ postsPagination }: HomeProps) {
         <div className={styles.posts}>
 
           {
-            posts.map(post => (
-              <Link href={`/post/${ post.uid }`}>
-                <a key={ post.uid }>
-                  <strong>{ post.data.title }</strong>
-                  <p>{ post.data.subtitle }</p>
+            posts &&
+              posts.map(post => (
+                <Link href={`/post/${ post.uid }`}>
+                  <article key={ post.uid }>
+                    <strong>{ post.data.title }</strong>
+                    <p>{ post.data.subtitle }</p>
 
-                  <div className={styles.info}>
-                    <div>
-                      <FiCalendar />
-                      <time>{ post.first_publication_date }</time>
+                    <div className={styles.info}>
+                      <div>
+                        <FiCalendar />
+                        <time>{ post.first_publication_date }</time>
+                      </div>
+                      <div>
+                        <FiUser />
+                        { post.data.author }
+                      </div>
                     </div>
-                    <div>
-                      <FiUser />
-                      { post.data.author }
-                    </div>
-                  </div>
-                </a>
-              </Link>
-            ))
+                  </article>
+                </Link>
+              ))
           }
 
-          <p className={styles.button}>Carregar mais posts</p>
+          {
+            nextPage && (
+              <button onClick={() => loadPosts()} type="button">
+                <p className={styles.button}>Carregar mais posts</p>
+              </button>
+            )
+          }
 
         </div>
       </main>
@@ -82,10 +122,8 @@ export const getStaticProps: GetStaticProps = async () => {
     Prismic.predicates.at('document.type', 'post')
   ], {
     fetch: ['title', 'content'],
-    pageSize: 3,
+    pageSize: 1,
   });
-
-  // console.log(JSON.stringify(postsResponse, null, 2))
 
   const posts = postsResponse.results.map(post => {
     return {
