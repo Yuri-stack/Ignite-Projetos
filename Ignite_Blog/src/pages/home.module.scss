@@ -8,10 +8,10 @@
     max-width: 720px;
     margin: 0 auto;
 
-    a {
+    article {
         display: block;
 
-        &+a {
+        &+article {
             padding-top: 2rem;
         }
 
@@ -54,12 +54,17 @@
         }
     }
 
-    .button{
+    button {
         margin-top: 4rem;
-
+        font-size: 1.2rem;
         font-weight: 600;
-        color: var(--highlight);
 
-        cursor: pointer;
+        background-color: transparent;
+        border: 0;
+        width: 200px;
+
+        p {
+            color: var(--highlight);
+        }
     }
 }
