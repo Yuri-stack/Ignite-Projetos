@@ -3,8 +3,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { GetStaticPaths, GetStaticProps } from 'next';
-import Head from 'next/head';
+import { useRouter } from 'next/router'
 import { RichText } from 'prismic-dom';
+import Head from 'next/head';
+import Prismic from '@prismicio/client';
 
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import { getPrismicClient } from '../../services/prismic';
@@ -34,7 +36,12 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps) {
-  return (
+  const { isFallback } = useRouter()
+
+
+  return isFallback ? (
+    <div>Carregando...</div>
+  ) : (
     <>
       <Head>
         <title>{post.data.title}</title>
@@ -63,10 +70,10 @@ export default function Post({ post }: PostProps) {
 
           {post.data.content.map(content => (
             <div className={styles.content}>
-              <h2>{ content.heading }</h2>
+              <h2>{content.heading}</h2>
               <div dangerouslySetInnerHTML={{
                 __html: RichText.asHtml(content.body)
-              }}/>
+              }} />
             </div>
           ))}
 
@@ -78,12 +85,25 @@ export default function Post({ post }: PostProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const prismic = getPrismicClient();
-  // const posts = await prismic.query(TODO);
+
+  const posts = await prismic.query<any>(
+    [Prismic.predicates.at('document.type', 'post')],
+    {
+      fetch: ['title', 'banner', 'author', 'content'],
+      pageSize: 1
+    }
+  );
+
+  const paths = posts.results.map(result => ({
+    params: {
+      slug: result.uid,
+    },
+  }));
 
   return {
-    paths: [],
-    fallback: 'blocking'
-  }
+    paths,
+    fallback: true,
+  };
 };
 
 export const getStaticProps: GetStaticProps = async context => {
@@ -105,7 +125,8 @@ export const getStaticProps: GetStaticProps = async context => {
   }
 
   return {
-    props: { post }
+    props: { post },
+    revalidate: 60 * 60 * 24 // 24 horas
   }
 
 };
