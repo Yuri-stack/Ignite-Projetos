@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable no-param-reassign */
 
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router'
@@ -8,6 +9,8 @@ import { RichText } from 'prismic-dom';
 import Head from 'next/head';
 import Prismic from '@prismicio/client';
 
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR'
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import { getPrismicClient } from '../../services/prismic';
 
@@ -38,6 +41,23 @@ interface PostProps {
 export default function Post({ post }: PostProps) {
   const { isFallback } = useRouter()
 
+  const readingRate = post.data.content.reduce((acc, content) => {
+    function readTime(text: string): number{
+      return text.split(' ').length
+    }
+
+    acc += readTime(content.heading) / 200
+    acc += readTime(RichText.asText(content.body)) / 200
+
+    return Math.ceil(acc);
+
+    // const contentNumber = content.heading.split(' ').length
+    // const bodyNumber = RichText.asText(content.body).split(' ').length
+
+    // const readTime = (contentNumber + bodyNumber)/200
+    // acc += readTime
+    // return Math.ceil(acc);
+  }, 0)
 
   return isFallback ? (
     <div>Carregando...</div>
@@ -56,7 +76,7 @@ export default function Post({ post }: PostProps) {
           <div className={styles.info}>
             <div>
               <FiCalendar />
-              <time>{post.first_publication_date}</time>
+              <time>{format(new Date(post.first_publication_date), 'dd MMM yyyy', { locale: ptBR })}</time>
             </div>
             <div>
               <FiUser />
@@ -64,7 +84,7 @@ export default function Post({ post }: PostProps) {
             </div>
             <div>
               <FiClock />
-              4 min.
+              { readingRate } min
             </div>
           </div>
 
@@ -96,7 +116,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   const paths = posts.results.map(result => ({
     params: {
-      slug: result.uid,
+      slug: result.uid, 
     },
   }));
 
@@ -112,20 +132,20 @@ export const getStaticProps: GetStaticProps = async context => {
 
   const response = await prismic.getByUID<any>('post', String(slug), {});
 
-  const post = {
-    first_publication_date: new Date(response.first_publication_date).toLocaleDateString('pt-BR', {
-      day: '2-digit', month: 'long', year: 'numeric'
-    }),
-    data: {
-      title: response.data.title,
-      banner: response.data.banner,
-      author: response.data.author,
-      content: response.data.content
-    }
-  }
+  // const post = {
+  //   first_publication_date: new Date(response.first_publication_date).toLocaleDateString('pt-BR', {
+  //     day: '2-digit', month: 'long', year: 'numeric'
+  //   }),
+  //   data: {
+  //     title: response.data.title,
+  //     banner: response.data.banner,
+  //     author: response.data.author,
+  //     content: response.data.content
+  //   }
+  // }
 
   return {
-    props: { post },
+    props: { post: response },
     revalidate: 60 * 60 * 24 // 24 horas
   }
 
