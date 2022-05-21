@@ -29,12 +29,12 @@ export function makeServer(){
         },
 
         seeds(server){
-            server.createList('user', 200)
+            server.createList('user', 10)
         },
 
         routes(){
             this.namespace = 'api'  // Caminho que utilizamos para acessar as rotas. Ex: api/users
-            this.timing = 750   // Setando um delay para testar carregamentos
+            this.timing = 750       // Setando um delay para testar carregamentos
 
             // Rotas
             this.get('/users')
