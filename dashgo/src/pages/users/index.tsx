@@ -27,6 +27,9 @@ export default function UserList() {
         })
 
         return users
+    }, {
+        // Indica que por 5segundos ele não precisará recarrega os dados, após a pagina ser visitada novamente
+        staleTime: 1000 * 5 
     })
 
     const isWideVersion = useBreakpointValue({
