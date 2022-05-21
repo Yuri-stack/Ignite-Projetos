@@ -1,4 +1,5 @@
-import { createServer, Model } from 'miragejs'
+import { createServer, Factory, Model } from 'miragejs'
+import faker from 'faker'
 
 type User = {
     name: string
@@ -12,11 +13,30 @@ export function makeServer(){
             user: Model.extend<Partial<User>>({})
         },
 
+        // Gera fake datas em massa
+        factories:{
+            user: Factory.extend({
+                name(i: number){
+                    return `User ${i + 1}`
+                },
+                email(){
+                    return faker.internet.email().toLocaleLowerCase()
+                },
+                createdAt(){
+                    return faker.date.recent(10, new Date())
+                }
+            })
+        },
+
+        seeds(server){
+            server.createList('user', 200)
+        },
+
         routes(){
             this.namespace = 'api'  // Caminho que utilizamos para acessar as rotas. Ex: api/users
-            this.timing = 750   // setando um delay para testar carregamentos
+            this.timing = 750   // Setando um delay para testar carregamentos
 
-            // rotas
+            // Rotas
             this.get('/users')
             this.post('/users')
             
