@@ -2,7 +2,7 @@ import { useQuery } from "react-query"
 import { api } from "../api"
 
 type User = {
-    id: string
+    id: number
     name: string
     email: string
     createdAt: string
@@ -43,7 +43,7 @@ export async function getUsers(page: number): Promise<GetUsersResponse> {
 
 export function useUsers(page: number) {
     return useQuery(['users', page], () => getUsers(page), {
-        // Indica que por 5segundos ele não precisará recarrega os dados, após a pagina ser visitada novamente
-        staleTime: 1000 * 5
+        // Indica que por 10min ele não precisará recarrega os dados, após a pagina ser visitada novamente
+        staleTime: 1000 * 60 * 10
     })
 }

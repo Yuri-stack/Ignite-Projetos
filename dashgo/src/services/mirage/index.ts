@@ -56,7 +56,8 @@ export function makeServer(){
                 )
 
             })
-
+            
+            this.get('/users/:id')
             this.post('/users')
             
             // Reseta o namespace para não atrapalhar o api routing do Next
