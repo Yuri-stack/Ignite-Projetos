@@ -6,79 +6,90 @@ interface AxiosErrorResponse {
     code?: string;
 }
 
-let cookies = parseCookies()
 let isRefreshing = false
 let failedRequestsQueue = []
 
-export const api = axios.create({
-    baseURL: 'http://localhost:3333',
-    headers: {
-        Authorization: `Bearer ${cookies['nextauth.token']}`
-    }
-})
+export function setupAPIClient(ctx = undefined) {
+    let cookies = parseCookies(ctx)
 
-api.interceptors.response.use(
-    response => { return response },
-    (error: AxiosError<AxiosErrorResponse>) => {
+    const api = axios.create({
+        baseURL: 'http://localhost:3333',
+        headers: {
+            Authorization: `Bearer ${cookies['nextauth.token']}`
+        }
+    })
 
-        if (error.response.status === 401) {
+    api.interceptors.response.use(
+        response => { return response },
+        (error: AxiosError<AxiosErrorResponse>) => {
 
-            if (error.response.data?.code === 'token.expired') {
-                cookies = parseCookies()
+            if (error.response.status === 401) {
 
-                const { 'nextauth.refreshToken': refreshToken } = cookies
-                const originalConfig = error.config
+                if (error.response.data?.code === 'token.expired') {
+                    cookies = parseCookies(ctx)
 
-                if (!isRefreshing) {
-                    isRefreshing = true
+                    const { 'nextauth.refreshToken': refreshToken } = cookies
+                    const originalConfig = error.config
 
-                    api.post('/refresh', { refreshToken })
-                        .then(response => {
-                            const { token } = response.data
+                    if (!isRefreshing) {
+                        isRefreshing = true
 
-                            setCookie(undefined, 'nextauth.token', token, {
-                                maxAge: 60 * 60 * 24 * 30,   // 30 dias
-                                path: '/'
+                        api.post('/refresh', { refreshToken })
+                            .then(response => {
+                                const { token } = response.data
+
+                                setCookie(ctx, 'nextauth.token', token, {
+                                    maxAge: 60 * 60 * 24 * 30,   // 30 dias
+                                    path: '/'
+                                })
+                                setCookie(ctx, 'nextauth.refreshToken', response.data.refreshToken, {
+                                    maxAge: 60 * 60 * 24 * 30,   // 30 dias
+                                    path: '/'
+                                })
+
+                                api.defaults.headers['Authorization'] = `Bearer ${token}`
+
+                                failedRequestsQueue.forEach(request => request.onSucess(token))
+                                failedRequestsQueue = []
+
+                            }).catch((err) => {
+
+                                failedRequestsQueue.forEach(request => request.onFailed(err))
+                                failedRequestsQueue = []
+
+                                if (typeof window) {
+                                    signOut()
+                                }
+
+                            }).finally(() => {
+                                isRefreshing = false
                             })
-                            setCookie(undefined, 'nextauth.refreshToken', response.data.refreshToken, {
-                                maxAge: 60 * 60 * 24 * 30,   // 30 dias
-                                path: '/'
-                            })
+                    }
 
-                            api.defaults.headers['Authorization'] = `Bearer ${token}`
+                    return new Promise((resolve, reject) => {
+                        failedRequestsQueue.push({
+                            onSucess: (token: string) => {
+                                originalConfig.headers['Authorization'] = `Bearer ${token}`
 
-                            failedRequestsQueue.forEach(request => request.onSucess(token))
-                            failedRequestsQueue = []
-
-                        }).catch((err) => {
-
-                            failedRequestsQueue.forEach(request => request.onFailed(err))
-                            failedRequestsQueue = []
-
-                        }).finally(() => {
-                            isRefreshing = false
+                                resolve(api(originalConfig))
+                            },
+                            onFailed: (err: AxiosError) => {
+                                reject(err)
+                            }
                         })
+                    })
                 }
 
-                return new Promise((resolve, reject) => {
-                    failedRequestsQueue.push({
-                        onSucess: (token: string) => {
-                            originalConfig.headers['Authorization'] = `Bearer ${token}`
-
-                            resolve(api(originalConfig))
-                        },
-                        onFailed: (err: AxiosError) => {
-                            reject(err)
-                        }
-                    })
-                })
+            } else {
+                if (typeof window) {
+                    signOut()
+                }
             }
 
-        } else {
-            signOut()
+            return Promise.reject(error)
+
         }
+    )
 
-        return Promise.reject(error)
-
-    }
-)
+    return api
+}
