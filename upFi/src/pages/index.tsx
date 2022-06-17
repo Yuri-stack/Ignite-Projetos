@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Button, Box } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useInfiniteQuery } from 'react-query';
@@ -19,7 +20,7 @@ export default function Home(): JSX.Element {
   } = useInfiniteQuery(
     'images',
     // TODO AXIOS REQUEST WITH PARAM
-    ,
+    //,
     // TODO GET AND RETURN NEXT PAGE PARAM
   );
 
