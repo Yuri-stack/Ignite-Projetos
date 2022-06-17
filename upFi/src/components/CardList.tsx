@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { SimpleGrid, useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Card } from './Card';
@@ -25,6 +26,9 @@ export function CardList({ cards }: CardsProps): JSX.Element {
   return (
     <>
       {/* TODO CARD GRID */}
+      {/* <SimpleGrid columns={3} spacing="40px">
+        <Card />
+      </SimpleGrid> */}
 
       {/* TODO MODALVIEWIMAGE */}
     </>
