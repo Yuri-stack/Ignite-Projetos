@@ -19,13 +19,29 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
 
   const formValidations = {
     image: {
-      // TODO REQUIRED, LESS THAN 10 MB AND ACCEPTED FORMATS VALIDATIONS
+      required: 'Arquivo obrigatório',
+      validate: {
+        lessThan10MB: image => image[0].size < 10485760 || 'O arquivo deve ser menor que 10MB', // Essa estrutra é feita pois o formato dos dados enviados de uma img é feita como um objeto
+        acceptedFormats: image => (/\.(jpe?g|png|gif)$/i).test(image[0].type) || 'Somente são aceitos arquivos PNG, JPEG e GIF' 
+      }
     },
     title: {
-      // TODO REQUIRED, MIN AND MAX LENGTH VALIDATIONS
+      required: 'Título obrigatório',
+      minLength: {
+        value: 2,
+        message: 'Mínimo de 2 caracteres'
+      },
+      maxLength : {
+        value: 20,
+        message: 'Máximo de 20 caracteres'
+      }
     },
     description: {
-      // TODO REQUIRED, MAX LENGTH VALIDATIONS
+      required: 'Descrição obrigatória',
+      maxLength : {
+        value: 65,
+        message: 'Máximo de 65 caracteres'
+      }
     },
   };
 
@@ -68,20 +84,20 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
           setLocalImageUrl={setLocalImageUrl}
           setError={setError}
           trigger={trigger}
-          // TODO SEND IMAGE ERRORS
-          // TODO REGISTER IMAGE INPUT WITH VALIDATIONS
+          error = { errors.image }  // TODO SEND IMAGE ERRORS
+          {...register("image", formValidations.image)} // TODO REGISTER IMAGE INPUT WITH VALIDATIONS
         />
 
         <TextInput
           placeholder="Título da imagem..."
-          // TODO SEND TITLE ERRORS
-          // TODO REGISTER TITLE INPUT WITH VALIDATIONS
+          error = { errors.title }  // TODO SEND TITLE ERRORS
+          {...register("title", formValidations.title)} // TODO REGISTER TITLE INPUT WITH VALIDATIONS
         />
 
         <TextInput
           placeholder="Descrição da imagem..."
-          // TODO SEND DESCRIPTION ERRORS
-          // TODO REGISTER DESCRIPTION INPUT WITH VALIDATIONS
+          error = { errors.description }  // TODO SEND DESCRIPTION ERRORS
+          {...register("description", formValidations.description)} // TODO REGISTER DESCRIPTION INPUT WITH VALIDATIONS
         />
       </Stack>
 
