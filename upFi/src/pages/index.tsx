@@ -12,7 +12,11 @@ import { Loading } from '../components/Loading';
 import { Error } from '../components/Error';
 
 export default function Home(): JSX.Element {
-  const getImages = ({ pageParam = null }) => api.get('/api/images', { params: { after: pageParam } })
+
+  const getImages = async ({ pageParam = null }) => {
+    const { data } = await api.get('/api/images', { params: { after: pageParam } })
+    return data
+  }
 
   const {
     data,
@@ -25,20 +29,19 @@ export default function Home(): JSX.Element {
     'images',
     getImages, { // TODO AXIOS REQUEST WITH PARAM
     getNextPageParam: lastPage => lastPage.data.after ?? null // TODO GET AND RETURN NEXT PAGE PARAM
-  }
-  );
+  });
 
   const formattedData = useMemo(() => {
     return data?.pages.map(page => page.data).flat() // TODO FORMAT AND FLAT DATA ARRAY
   }, [data]);
 
   // TODO RENDER LOADING SCREEN
-  if (isLoading){
+  if (isLoading) {
     return <Loading />
   }
 
   // TODO RENDER ERROR SCREEN
-  if (isError){
+  if (isError) {
     return <Error />
   }
 
@@ -54,11 +57,11 @@ export default function Home(): JSX.Element {
           onClick={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
         >
-          { isFetchingNextPage 
-            ? 'Carregar mais' 
+          {isFetchingNextPage
+            ? 'Carregar mais'
             : hasNextPage
-            ? 'Carregando'
-            : 'Nada mais a carregar'
+              ? 'Carregando'
+              : 'Nada mais a carregar'
           }
         </Button>
 
