@@ -24,19 +24,23 @@ export default function Home(): JSX.Element {
   } = useInfiniteQuery(
     'images',
     getImages, { // TODO AXIOS REQUEST WITH PARAM
-    getNextPageParam: lastPage => lastPage.data.after || null // TODO GET AND RETURN NEXT PAGE PARAM
+    getNextPageParam: lastPage => lastPage.data.after ?? null // TODO GET AND RETURN NEXT PAGE PARAM
   }
   );
 
   const formattedData = useMemo(() => {
-    return data.pages.map(page => page.data).flat() // TODO FORMAT AND FLAT DATA ARRAY
+    return data?.pages.map(page => page.data).flat() // TODO FORMAT AND FLAT DATA ARRAY
   }, [data]);
 
   // TODO RENDER LOADING SCREEN
-  if (isLoading) <Loading />
+  if (isLoading){
+    return <Loading />
+  }
 
   // TODO RENDER ERROR SCREEN
-  if (isError) <Error />
+  if (isError){
+    return <Error />
+  }
 
   return (
     <>
