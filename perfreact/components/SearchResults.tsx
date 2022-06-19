@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import { useMemo } from "react"
 import { ProductItem } from "./ProductItem"
 
@@ -8,9 +7,10 @@ interface SearchResultsProps {
         price: number
         title: string
     }>
+    onAddToWishList: (id: number) => void
 }
 
-export default function SearchResults({ results }: SearchResultsProps) {
+export default function SearchResults({ results, onAddToWishList }: SearchResultsProps) {
     const totalPrice = useMemo(() => {
         return results.reduce((total, product) => {
             return total + product.price
@@ -21,7 +21,11 @@ export default function SearchResults({ results }: SearchResultsProps) {
         <div>
             <h2>{totalPrice}</h2>
             {results.map(product => (
-                <ProductItem product={product} />
+                <ProductItem 
+                    key={product.id}
+                    product={product} 
+                    onAddToWishList={onAddToWishList}
+                />
             ))}
         </div>
     )
