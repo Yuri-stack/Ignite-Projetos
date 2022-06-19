@@ -1,10 +1,16 @@
+import { memo } from 'react';
 import { Star, Clock } from 'react-feather';
 
 import '../styles/movie-card.scss';
 
-import { MovieCardProps } from '../../types'
+interface MovieCardProps {
+  title: string;
+  poster: string;
+  rating: string;
+  runtime: string;
+}
 
-export function MovieCard(props: MovieCardProps) {
+function MovieCardComponent(props: MovieCardProps) {
   return (
     <div className="movie-card">
       <img
@@ -29,3 +35,7 @@ export function MovieCard(props: MovieCardProps) {
     </div>
   )
 }
+
+export const MovieCard = memo(MovieCardComponent, (prevProps, nextProps) => {
+  return Object.is(prevProps, nextProps)
+})
