@@ -1,9 +1,10 @@
+/* eslint-disable react/display-name */
 import { memo } from 'react'
 
 interface ProductItemProps {
     product: {
         id: number
-        price: string
+        price: number
         title: string
     }
 }
