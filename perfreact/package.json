@@ -10,6 +10,7 @@
     "server": "json-server -d 750 -w -p 3333 ./server.js"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^12.1.6",
     "@types/react-virtualized": "^9.21.21",
     "next": "12.1.6",
     "react": "^17",
