@@ -12,6 +12,12 @@
     --green-500: #00875f;
 }
 
+/* quando algum elemento estiver em focus(selecionado com o mouse ou com Tab) */
+:focus{ 
+    outline: transparent;
+    box-shadow: 0 0 0 2px var(--green-500);
+}
+
 * {
     margin: 0;
     padding: 0;
