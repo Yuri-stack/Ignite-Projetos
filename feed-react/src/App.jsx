@@ -5,6 +5,37 @@ import { Post } from "./components/Post";
 import styles from './App.module.css'
 import './global.css'
 
+const posts = [
+  {
+    id: 1,
+    author: {
+      avatarUrl: "https://github.com/Yuri-stack.png",
+      name: "Yuri Oliveira",
+      role: "Instrutor"
+    },
+    content: [
+      { type: 'paragraph', content: 'Fala galeraa 👋' },
+      { type: 'paragraph', content: 'Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀' },
+      { type: 'link', content: 'jane.design/doctorcare' }
+    ],
+    publishedAt: new Date('2022-06-27 20:00:00')
+  },
+  {
+    id: 2,
+    author: {
+      avatarUrl: "https://images.unsplash.com/photo-1544717305-2782549b5136?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80",
+      name: "Aurora Forster",
+      role: "Professora"
+    },
+    content: [
+      { type: 'paragraph', content: 'Fala galeraa 👋' },
+      { type: 'paragraph', content: 'Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀' },
+      { type: 'link', content: 'jane.design/doctorcare' }
+    ],
+    publishedAt: new Date('2022-06-26 20:00:00')
+  },
+]
+
 export function App() {
   return (
     <>
@@ -14,17 +45,17 @@ export function App() {
         <aside>
           <Sidebar />
         </aside>
-        
-        <main>
-          <Post
-            author="Yuri"
-            content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae, consequatur? Facere blanditiis aperiam enim alias eligendi, pariatur recusandae accusantium soluta asperiores facilis, dolores temporibus optio doloremque, ratione sit iusto dolor!"
-          />
 
-          <Post
-            author="Yssac"
-            content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae, consequatur? Facere blanditiis aperiam enim alias eligendi, pariatur recusandae accusantium soluta asperiores facilis, dolores temporibus optio doloremque, ratione sit iusto dolor!2"
-          />
+        <main>
+          {posts.map(post => {
+            return (
+              <Post 
+                author={post.author}
+                content={post.content}
+                publishedAt={post.publishedAt}
+              />
+            )
+          })}
         </main>
       </div>
     </>
