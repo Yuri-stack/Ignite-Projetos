@@ -20,6 +20,10 @@
     box-sizing: border-box;
 }
 
+:focus{ 
+    outline: transparent;
+}
+
 body{
     background-color: var(--gray-500);
     -webkit-font-smoothing: antialiased;
