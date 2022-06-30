@@ -13,3 +13,18 @@
     --gray-600:#1a1a1a;
     --gray-700:#0d0d0d;
 }
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: var(--gray-500);
+    -webkit-font-smoothing: antialiased;
+}
+
+body, input, button{
+    font: 400 1rem Inter, sans-serif;
+}
