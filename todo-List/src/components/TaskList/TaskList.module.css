@@ -87,6 +87,14 @@
     text-decoration: line-through;
 }
 
+.task button{
+    background: transparent;
+    border: 0;
+    border-radius: 2px;
+    line-height: 0;
+    cursor: pointer;
+}
+
 .task svg{
     color: var(--gray-300);
     transition: color 0.2s;
