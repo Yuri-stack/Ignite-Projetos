@@ -24,6 +24,10 @@
     outline: transparent;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body{
     background-color: var(--gray-600);
     -webkit-font-smoothing: antialiased;
@@ -31,4 +35,21 @@ body{
 
 body, input, button{
     font: 400 1rem Inter, sans-serif;
+}
+
+body::-webkit-scrollbar {
+    width: 0.5rem;
+    /* largura da Scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+    background: var(--gray-700);
+    /* cor do plano de fundo da Scrollbar */
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: var(--purple-dark);
+    /* cor do scroll */
+    border-radius: 20px;
+    /* borda do scroll */
 }
