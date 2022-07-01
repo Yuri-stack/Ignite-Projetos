@@ -13,6 +13,7 @@ interface Task {
 export function Input() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [newContentTask, setNewContentTask] = useState('')
+  const [tasksCompleted, setTasksCompleted] = useState(0)
 
   function handleAddNewTask(event: FormEvent) {
     event.preventDefault()
@@ -31,9 +32,26 @@ export function Input() {
     setNewContentTask(event.target.value)
   }
 
-  function handleDeleteTask(id: number){
-    const tasksNotCompleted = tasks.filter(task => task.id != id)
-    setTasks(tasksNotCompleted)
+  function handleDeleteTask(id: number) {
+    const tasksNotDeleted = tasks.filter(task => task.id != id)
+    setTasks(tasksNotDeleted)
+    countTasksCompleted(tasksNotDeleted)
+  }
+
+  function handleCompleteTask(id: number) {
+    const newListTask = tasks
+      .map(task => task.id === id ? {
+        ...task,                        // espalho os campos da Task (id, content, isCompleted)
+        isCompleted: !task.isCompleted  // sobrescrevo o isCompleted, sempre invertendo o valor
+      } : task)
+
+    countTasksCompleted(newListTask)
+    setTasks(newListTask)
+  }
+
+  function countTasksCompleted(tasks: Task[]){
+    const quantityTasksCompleted = tasks.filter(task => task.isCompleted != false).length
+    setTasksCompleted(quantityTasksCompleted)
   }
 
   return (
@@ -54,7 +72,12 @@ export function Input() {
         </button>
       </form>
 
-      <TaskList tasks={tasks} onDeleteTask={handleDeleteTask}/>
+      <TaskList
+        tasks={tasks}
+        tasksCompleted={tasksCompleted}
+        onDeleteTask={handleDeleteTask}
+        onCompleteTask={handleCompleteTask}
+      />
     </>
 
   )

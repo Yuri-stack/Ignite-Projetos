@@ -10,17 +10,19 @@ interface Task {
 
 interface TaskListProps {
   tasks: Task[]
+  tasksCompleted: number
   onDeleteTask: (id: number) => void
+  onCompleteTask: (id: number) => void
 }
 
-export function TaskList({ tasks, onDeleteTask }: TaskListProps) {
+export function TaskList({ tasks, tasksCompleted, onDeleteTask, onCompleteTask }: TaskListProps) {
   let quantityNotCompleted = tasks.length
 
   return (
     <section className={styles.tasklistContainer}>
       <header className={styles.tasklistHeader}>
         <p>Tarefas Criadas <span>{quantityNotCompleted}</span></p>
-        <p>Concluídas <span>0 de {quantityNotCompleted}</span></p>
+        <p>Concluídas <span>{tasksCompleted} de {quantityNotCompleted}</span></p>
       </header>
 
       {
@@ -37,15 +39,23 @@ export function TaskList({ tasks, onDeleteTask }: TaskListProps) {
           tasks.map(task => (
 
             <div key={task.id} className={styles.task}>
-              <input type="checkbox" checked={task.isCompleted} readOnly />
+              <input
+                type="checkbox"
+                checked={task.isCompleted}
+                onClick={() => { onCompleteTask(task.id) }}
+                readOnly
+              />
+
               <p className={task.isCompleted ? styles.taskChecked : ''}>
                 {task.content}
               </p>
+
               <div>
-                <button onClick={() => {onDeleteTask(task.id)}}>
+                <button onClick={() => { onDeleteTask(task.id) }}>
                   <Trash size={22} weight="thin" />
                 </button>
               </div>
+
             </div>
 
           ))
