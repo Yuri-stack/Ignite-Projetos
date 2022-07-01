@@ -10,20 +10,21 @@ interface Task {
 
 interface TaskListProps {
   tasks: Task[]
+  onDeleteTask: (id: number) => void
 }
 
-export function TaskList({ tasks }: TaskListProps) {
-  let quantityUndone = tasks.length
+export function TaskList({ tasks, onDeleteTask }: TaskListProps) {
+  let quantityNotCompleted = tasks.length
 
   return (
     <section className={styles.tasklistContainer}>
       <header className={styles.tasklistHeader}>
-        <p>Tarefas Criadas <span>{quantityUndone}</span></p>
-        <p>Concluídas <span>0 de {quantityUndone}</span></p>
+        <p>Tarefas Criadas <span>{quantityNotCompleted}</span></p>
+        <p>Concluídas <span>0 de {quantityNotCompleted}</span></p>
       </header>
 
       {
-        quantityUndone === 0 ? (
+        quantityNotCompleted === 0 ? (
 
           <div className={styles.tasklist}>
             <ClipboardText size={56} weight="thin" />
@@ -41,7 +42,9 @@ export function TaskList({ tasks }: TaskListProps) {
                 {task.content}
               </p>
               <div>
-                <Trash size={22} weight="thin" />
+                <button onClick={() => {onDeleteTask(task.id)}}>
+                  <Trash size={22} weight="thin" />
+                </button>
               </div>
             </div>
 

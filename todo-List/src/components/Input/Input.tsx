@@ -18,7 +18,7 @@ export function Input() {
     event.preventDefault()
 
     const newTask: Task = {
-      id: tasks.length + 1,
+      id: Math.random(),
       content: newContentTask,
       isCompleted: false
     }
@@ -27,10 +27,13 @@ export function Input() {
     setNewContentTask('')
   }
 
-  console.log(tasks)
-
-  function handleNewTaskChange(event: ChangeEvent<HTMLInputElement>) {
+  function handleNewContentChange(event: ChangeEvent<HTMLInputElement>) {
     setNewContentTask(event.target.value)
+  }
+
+  function handleDeleteTask(id: number){
+    const tasksNotCompleted = tasks.filter(task => task.id != id)
+    setTasks(tasksNotCompleted)
   }
 
   return (
@@ -41,7 +44,7 @@ export function Input() {
           type="text"
           placeholder='Adicione uma nova tarefa'
           value={newContentTask}
-          onChange={handleNewTaskChange}
+          onChange={handleNewContentChange}
           required
         />
 
@@ -51,7 +54,7 @@ export function Input() {
         </button>
       </form>
 
-      <TaskList tasks={tasks} />
+      <TaskList tasks={tasks} onDeleteTask={handleDeleteTask}/>
     </>
 
   )
