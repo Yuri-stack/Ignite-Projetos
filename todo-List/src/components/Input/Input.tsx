@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react'
 import { PlusCircle } from 'phosphor-react'
 import { TaskList } from '../TaskList/TaskList'
 
@@ -29,6 +29,7 @@ export function Input() {
   }
 
   function handleNewContentChange(event: ChangeEvent<HTMLInputElement>) {
+    event.target.setCustomValidity('')
     setNewContentTask(event.target.value)
   }
 
@@ -54,6 +55,10 @@ export function Input() {
     setTasksCompleted(quantityTasksCompleted)
   }
 
+  function handleTaskInvalid(event: InvalidEvent<HTMLInputElement>){
+    event.target.setCustomValidity('Esse campo é obrigatório!')
+}
+
   return (
     <>
       <form className={styles.form} onSubmit={handleAddNewTask}>
@@ -63,6 +68,7 @@ export function Input() {
           placeholder='Adicione uma nova tarefa'
           value={newContentTask}
           onChange={handleNewContentChange}
+          onInvalid={handleTaskInvalid}
           required
         />
 
