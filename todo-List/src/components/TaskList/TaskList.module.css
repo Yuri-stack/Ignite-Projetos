@@ -81,6 +81,11 @@
     margin: 0.75rem;
 }
 
+.task p.taskChecked{
+    color: var(--gray-300);
+    text-decoration: line-through;
+}
+
 .task svg{
     color: var(--gray-300);
     transition: color 0.2s;
@@ -95,8 +100,3 @@
     height: 1rem;
     margin: 1rem;
 }
-
-/* .task p{
-    color: var(--gray-300);
-    text-decoration: line-through;
-} */
