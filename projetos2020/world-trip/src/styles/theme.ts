@@ -12,6 +12,12 @@ export const theme = extendTheme({
             "info-50": "#99999950"
         }
     },
+    breakpoints: {
+        sm: '3750px',
+        md: '768px',
+        lg: '960px',
+        xl: '1200px',
+    },
     styles: {
         global: {
             body: {
