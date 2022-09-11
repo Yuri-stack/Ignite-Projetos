@@ -1,10 +1,12 @@
 import * as z from 'zod'
 import * as Dialog from '@radix-ui/react-dialog';
+import { useContext } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import { ArrowCircleDown, ArrowCircleUp, X } from 'phosphor-react';
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { CloseButton, Content, Overlay, TransactionType, TransactionTypeButton } from './styles';
+import { TransactionsContext } from '../../contexts/TransactionsContext';
 
 // Descrevendo a estrutura do campo a ser pesquisado
 const TransactionFormSchema = z.object({
@@ -18,14 +20,26 @@ const TransactionFormSchema = z.object({
 type TransactionFormInputs = z.infer<typeof TransactionFormSchema>
 
 export function TransactionModal() {
-    const { control, register, handleSubmit, formState: { isSubmitting } } = useForm<TransactionFormInputs>({
+    const { createTransaction } = useContext(TransactionsContext)
+
+    const { 
+        reset,
+        control,
+        register,
+        handleSubmit,
+        formState: { isSubmitting } 
+    } = useForm<TransactionFormInputs>({
         resolver: zodResolver(TransactionFormSchema),
         defaultValues: { type: 'income' }
     })
 
     async function handleCreateTransaction(data: TransactionFormInputs) {
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        console.log(data)
+        const { description, price, category, type } = data
+
+        await createTransaction({ description, price, category, type })
+
+        reset() // resetando campos do Modal
+
     }
 
     return (
