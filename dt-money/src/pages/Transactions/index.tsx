@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContextSelector } from "use-context-selector";
 
 import { Header } from "../../components/Header";
 import { SearchForm } from "../../components/SearchForm";
@@ -19,7 +19,10 @@ interface Transactions {
 }
 
 export function Transactions() {
-  const { transactions } = useContext(TransactionsContext)
+  // Selecionando apenas a info que queremos do context, para evitar render. desnecessárias
+  const transactions = useContextSelector(TransactionsContext, (context) => {
+    return context.transactions
+  })
 
   return (
     <>
