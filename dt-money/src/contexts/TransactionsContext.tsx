@@ -34,7 +34,7 @@ export function TransactionsProvider({ children }: TransactionProviderType) {
 
   const [transactions, setTransactions] = useState<Transactions[]>([])
 
-   const fetchTransactions = useCallback(async (query?: string) => {
+  const fetchTransactions = useCallback(async (query?: string) => {
 
       // q representa o paramentro de busca, seguindo a docs. da Fetch API
       const response = await api.get('transactions', {
@@ -47,7 +47,7 @@ export function TransactionsProvider({ children }: TransactionProviderType) {
   
       setTransactions(response.data)
 
-    }, [])
+  }, [])
 
   const createTransaction = useCallback(async (data: createTransactionInput) => {
     const { description, price, category, type } = data
