@@ -1,7 +1,6 @@
 import Stripe from "stripe"
 import Image from "next/image"
-import { GetStaticProps } from "next"
-import { useRouter } from "next/router"
+import { GetStaticPaths, GetStaticProps } from "next"
 import { stripe } from '../../lib/stripe'
 
 import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
@@ -35,6 +34,16 @@ export default function Product({ product }: ProductProps) {
   )
 }
 
+/* Esse método serve para indicar ao Next quais são as paginas com params que queremos gerar versões estáticas */
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      { params: { id: 'prod_MkiHUXPT7YfkXL' }}
+    ],
+    fallback: false
+  }
+}
+
 export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ params }) => {
   // No GetStaticProps passo um Generic. 
   // Primeiro param. (any) indica o tipo do retorno | return { props: TipoProps, ... }
@@ -42,6 +51,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
 
   const productId = params?.id
 
+  // Buscando os dados do Produto pelo id, diretamente do Stripe
   const product = await stripe.products.retrieve(productId, {
     expand: ['default_price']
   })
