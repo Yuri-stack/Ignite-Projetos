@@ -1,23 +1,66 @@
+import Stripe from "stripe"
+import Image from "next/image"
+import { GetStaticProps } from "next"
 import { useRouter } from "next/router"
+import { stripe } from '../../lib/stripe'
+
 import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
 
-export default function Product() {
-  const { query } = useRouter()
+interface ProductProps{
+  product: {
+    id: string
+    name: string
+    imageUrl: string
+    description: string
+    price: string
+  }
+}
 
+export default function Product({ product }: ProductProps) {
   return (
     <ProductContainer>
-      <ImageContainer></ImageContainer>
+      <ImageContainer>
+        <Image src={ product.imageUrl } width={520} height={480} alt="" />
+      </ImageContainer>
 
       <ProductDetails>
-        <h1>Camiseta 1</h1>
-        <span>R$ 79,99</span>
+        <h1>{ product.name }</h1>
+        <span>{ product.price }</span>
 
-        <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maxime nobis in asperiores iure nihil eum non culpa consectetur nesciunt porro animi labore accusamus, libero officia voluptas sequi? Molestiae, doloribus dolores!
-        </p>
+        <p>{ product.description }</p>
 
         <button>Comprar agora</button>
       </ProductDetails>
     </ProductContainer>
   )
+}
+
+export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ params }) => {
+  // No GetStaticProps passo um Generic. 
+  // Primeiro param. (any) indica o tipo do retorno | return { props: TipoProps, ... }
+  // Segundo param. indica a tipagem do params pego na url
+
+  const productId = params?.id
+
+  const product = await stripe.products.retrieve(productId, {
+    expand: ['default_price']
+  })
+
+  const price = product.default_price as Stripe.Price
+
+  return {
+    props: {
+      product: {
+        id: product.id,
+        name: product.name,
+        imageUrl: product.images[0],
+        description: product.description,
+        price: new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }).format(price.unit_amount! / 100),
+      }
+    },
+    revalidate: 60 * 60 * 1, // 1 hora
+  }
 }
