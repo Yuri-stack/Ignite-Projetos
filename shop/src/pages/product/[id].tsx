@@ -4,6 +4,7 @@ import { GetStaticPaths, GetStaticProps } from "next"
 import { stripe } from '../../lib/stripe'
 
 import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
+import { useRouter } from "next/router"
 
 interface ProductProps{
   product: {
@@ -16,6 +17,13 @@ interface ProductProps{
 }
 
 export default function Product({ product }: ProductProps) {
+  const { isFallback } = useRouter()
+
+  // Para o carregamento de itens que não tenham ID pré definido
+  if(isFallback){
+    return <p>Loading...</p>
+  }
+
   return (
     <ProductContainer>
       <ImageContainer>
@@ -34,13 +42,23 @@ export default function Product({ product }: ProductProps) {
   )
 }
 
-/* Esse método serve para indicar ao Next quais são as paginas com params que queremos gerar versões estáticas */
+// Esse método serve para indicar ao Next quais são as paginas com params que queremos gerar versões estáticas
 export const getStaticPaths: GetStaticPaths = async () => {
+  // Em um caso real, poderiamos filtrar os principais produtos e colocar os seus ID no path
+
+  // Fallback (true): permite que produtos que não tem ID definido seja carregado, 
+  // esperando que seja carregado, com a opção de fazer um Loading com o hook useRouter(isFallback)
+
+  // Fallback ('blocking'): qualquer item sem id definido será carregado, 
+  // mas dá a impressão que nada mudou, sem a opção de Loanding
+
+  // Fallback (false): qualquer item sem id definido retorna 404
+
   return {
     paths: [
       { params: { id: 'prod_MkiHUXPT7YfkXL' }}
     ],
-    fallback: false
+    fallback: true
   }
 }
 
