@@ -5,8 +5,10 @@ import { stripe } from '../../lib/stripe'
 
 import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
 import { useRouter } from "next/router"
+import axios from "axios"
+import { useState } from "react"
 
-interface ProductProps{
+interface ProductProps {
   product: {
     id: string
     name: string
@@ -20,28 +22,50 @@ interface ProductProps{
 export default function Product({ product }: ProductProps) {
   const { isFallback } = useRouter()
 
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
+
   // Para o carregamento de itens que não tenham ID pré definido
-  if(isFallback){
+  if (isFallback) {
     return <p>Loading...</p>
   }
 
-  function handleBuyProduct(){
-    console.log(product.defaultPriceId)
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckoutSession(true)
+
+      // Acessando a API Route e enviando o priceId
+      const response = await axios.post('/api/checkout', {
+        priceId: product.defaultPriceId
+      })
+
+      // Desestruturando a responsa da nossa função da API
+      const { checkoutUrl } = response.data
+
+      // Direciona para a Rota de checkout do Stripe
+      window.location.href = checkoutUrl
+
+    } catch (error) {
+      setIsCreatingCheckoutSession(false)
+      alert('Falha ao redirecionar para o checkout')
+    }
   }
 
   return (
     <ProductContainer>
       <ImageContainer>
-        <Image src={ product.imageUrl } width={520} height={480} alt="" />
+        <Image src={product.imageUrl} width={520} height={480} alt="" />
       </ImageContainer>
 
       <ProductDetails>
-        <h1>{ product.name }</h1>
-        <span>{ product.price }</span>
+        <h1>{product.name}</h1>
+        <span>{product.price}</span>
 
-        <p>{ product.description }</p>
+        <p>{product.description}</p>
 
-        <button onClick={ handleBuyProduct }>Comprar agora</button>
+        <button 
+          disabled={isCreatingCheckoutSession} 
+          onClick={handleBuyProduct}
+        >Comprar agora</button>
       </ProductDetails>
     </ProductContainer>
   )
@@ -61,7 +85,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: [
-      { params: { id: 'prod_MkiHUXPT7YfkXL' }}
+      { params: { id: 'prod_MkiHUXPT7YfkXL' } }
     ],
     fallback: true
   }
