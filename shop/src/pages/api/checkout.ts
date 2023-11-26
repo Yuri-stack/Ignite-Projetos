@@ -1,12 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { stripe } from "../../lib/stripe";
+import { IProduct } from "../../context/Context";
 
-export default async function handler(req: NextApiRequest, res:NextApiResponse){
-    const { priceId } = req.body
-    
-    if(req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' })
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const { products } = req.body as { products: IProduct[] }
 
-    if(!priceId) return res.status(400).json({error: 'Preço não encontrado'})
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' })
+
+    if (!products) return res.status(400).json({ error: 'Produtos não encontrados' })
 
     const successUrl = `${process.env.NEXT_URL}/success?session_id={CHECKOUT_SESSION_ID}`
     const cancelUrl = `${process.env.NEXT_URL}/`
@@ -15,9 +16,10 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse){
         success_url: successUrl,
         cancel_url: cancelUrl,
         mode: 'payment',
-        line_items: [
-            { price: priceId, quantity: 1}
-        ]
+        line_items: products.map(product => ({
+            price: product.defaultPriceId,
+            quantity: 1
+        }))
     })
 
     return res.status(201).json({
