@@ -1,12 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Box, BoxProps, Text } from '@ignite-ui/react'
 
-export default {
+const meta: Meta<BoxProps> = {
     title: 'Surfaces/Box',
     component: Box,
     args: {
         children: <Text>Testando o elemento Box</Text>
     },
-} as Meta<BoxProps>
+    argTypes: {
+        children: {
+            control: {
+                type: null,
+            },
+        },
+    },
+}
+
+export default meta;
 
 export const Primary: StoryObj<BoxProps> = {}

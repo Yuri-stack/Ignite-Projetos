@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Box, Text, TextInput, TextInputProps } from '@ignite-ui/react'
 
-export default {
+const meta: Meta<TextInputProps> = {
     title: 'Form/Text Input',
     component: TextInput,
     args: {},
@@ -18,7 +18,9 @@ export default {
             )
         },
     ],
-} as Meta<TextInputProps>
+}
+
+export default meta;
 
 export const Primary: StoryObj<TextInputProps> = {
     args: {
@@ -35,5 +37,6 @@ export const Disabled: StoryObj<TextInputProps> = {
 export const WithPrefix: StoryObj<TextInputProps> = {
     args: {
         prefix: 'cal.com/',
+        placeholder: 'your-username'
     },
 }

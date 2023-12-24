@@ -1,14 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Avatar, AvatarProps } from '@ignite-ui/react'
 
-export default {
+const meta: Meta<AvatarProps> = {
     title: 'Data Display/Avatar',
     component: Avatar,
     args: {
         src: 'https://github.com/Yuri-stack.png',
         alt: 'Yuri Oliveira'
     },
-} as Meta<AvatarProps>
+    argTypes: {
+        src: {
+            control: {
+                type: 'text',
+            },
+        },
+    },
+}
+
+export default meta;
 
 export const Primary: StoryObj<AvatarProps> = {}
 
