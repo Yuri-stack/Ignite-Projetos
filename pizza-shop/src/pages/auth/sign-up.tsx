@@ -23,7 +23,6 @@ export function SignUp() {
 
     function handleSignUp(data: SignUpForm) {
         try {
-            console.log(data)
             toast.success('Restaurante cadastrado com sucesso!', {
                 action: {
                     label: 'Login',

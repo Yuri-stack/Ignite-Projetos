@@ -17,7 +17,6 @@ export function SignIn() {
     const { register, handleSubmit, formState: { isSubmitting } } = useForm<SignInForm>()
 
     function handleSignIn(data: SignInForm) {
-        console.log(data)
         toast.success('Enviamos um link de autenticação para o seu e-mail!', {
             action: {
                 label: 'Reenviar',
