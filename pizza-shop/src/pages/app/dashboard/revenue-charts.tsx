@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 import colors from 'tailwindcss/colors'
 
 export function RevenueCharts() {
@@ -36,7 +36,16 @@ export function RevenueCharts() {
                             width={80}
                             tickFormatter={(value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         />
-                        <Line type="linear" strokeWidth={2} dataKey="revenue" stroke={colors.emerald['500']} />
+
+                        <CartesianGrid vertical={false} className="stroke-muted" />
+
+                        <Line
+                            type="linear"
+                            strokeWidth={2}
+                            dataKey="revenue"
+                            stroke={colors.emerald['500']}
+                        />
+
                     </LineChart>
                 </ResponsiveContainer>
             </CardContent>
