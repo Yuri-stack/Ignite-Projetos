@@ -11,15 +11,23 @@ import { z } from "zod";
 export function Orders() {
     const [searchParams, setSearchParams] = useSearchParams()
 
+    const orderId = searchParams.get("orderId")
+    const customerName = searchParams.get("customerName")
+    const status = searchParams.get("status")
+
     const pageIndex = z.coerce  // coerce tenta converter x em y, texto em número
         .number()
         .transform((page) => page - 1)
         .parse(searchParams.get('page') ?? '1')
 
-
     const { data: result } = useQuery({
-        queryKey: ['orders', pageIndex],    // coloquei aqui o pageIndex pois ele é necessário, sempre que o user trocar a página a gente pedir para o R.Query procurar os dados
-        queryFn: () => getOrders({ pageIndex })
+        queryKey: ['orders', pageIndex, orderId, customerName, status],    // toda informação que vai alterar o valor precisa estar na queryKey | Sempre que o user trocar a página a gente pedir para o R.Query procurar os dados
+        queryFn: () => getOrders({
+            pageIndex,
+            customerName,
+            orderId,
+            status: status === 'all' ? null : status
+        })
     })
 
     function handlePaginated(pageIndex: number) {
