@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "@/api/get-orders";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
+import { OrderTableSkeleton } from "./order-table-skeleton";
 
 export function Orders() {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -20,7 +21,7 @@ export function Orders() {
         .transform((page) => page - 1)
         .parse(searchParams.get('page') ?? '1')
 
-    const { data: result } = useQuery({
+    const { data: result, isLoading: isLoadingOrders } = useQuery({
         queryKey: ['orders', pageIndex, orderId, customerName, status],    // toda informação que vai alterar o valor precisa estar na queryKey | Sempre que o user trocar a página a gente pedir para o R.Query procurar os dados
         queryFn: () => getOrders({
             pageIndex,
@@ -64,21 +65,21 @@ export function Orders() {
                             </TableHeader>
 
                             <TableBody>
-                                {
-                                    result && result.orders.map(order => {
+                                {result &&
+                                    result.orders?.map((order) => {
                                         return <OrderTableRow key={order.orderId} order={order} />
-                                    })
-                                }
+                                    })}
                             </TableBody>
                         </Table>
                     </div>
+                    {isLoadingOrders && <OrderTableSkeleton />}
                     {
                         result && (
                             <Pagination
                                 onPageChange={handlePaginated}
-                                pageIndex={result.meta.pageIndex}
-                                totalCount={result.meta.totalCount}
-                                perPage={result.meta.perPage} />
+                                pageIndex={result.meta?.pageIndex}
+                                totalCount={result.meta?.totalCount}
+                                perPage={result.meta?.perPage} />
                         )
                     }
                 </div>
