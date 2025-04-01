@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/card'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
 import { Label } from '@/components/ui/label'
+import { Loader2 } from 'lucide-react'
 
 export function RevenueChart() {
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
@@ -38,24 +39,14 @@ export function RevenueChart() {
             }),
     })
 
-    // const chartData = useMemo(() => {
-    //     return dailyRevenueInPeriod?.map((chartItem) => {
-    //         return {
-    //             date: chartItem.date,
-    //             receipt: chartItem.receipt / 100,
-    //         }
-    //     })
-    // }, [dailyRevenueInPeriod])
+    const chartData = useMemo(() => {
+        if (!Array.isArray(dailyRevenueInPeriod)) return
 
-    const data = [
-        { revenue: 800, date: '21/01' },
-        { revenue: 900, date: '22/01' },
-        { revenue: 1500, date: '23/01' },
-        { revenue: 700, date: '24/01' },
-        { revenue: 950, date: '25/01' },
-        { revenue: 700, date: '26/01' },
-        { revenue: 2000, date: '26/01' },
-    ]
+        return dailyRevenueInPeriod.map((chartItem) => ({
+            date: chartItem.date,
+            receipt: chartItem.receipt / 100,
+        }))
+    }, [dailyRevenueInPeriod])
 
     return (
         <Card className="col-span-6">
@@ -73,9 +64,9 @@ export function RevenueChart() {
                 </div>
             </CardHeader>
             <CardContent>
-                {data && (
+                {chartData ? (
                     <ResponsiveContainer width="100%" height={240}>
-                        <LineChart data={data} style={{ fontSize: 12 }}>
+                        <LineChart data={chartData} style={{ fontSize: 12 }}>
                             <XAxis dataKey="date" axisLine={false} tickLine={false} dy={16} />
                             <YAxis
                                 stroke="#888"
@@ -98,6 +89,10 @@ export function RevenueChart() {
                             />
                         </LineChart>
                     </ResponsiveContainer>
+                ) : (
+                    <div className="flex h-[240px] w-full items-center justify-center">
+                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                    </div>
                 )}
             </CardContent>
         </Card>
